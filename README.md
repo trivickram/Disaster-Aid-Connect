@@ -358,39 +358,47 @@ Built as part of a beginner-to-intermediate project challenge using **only AWS F
 ### 1. JavaScript: add-resource.js (Handles Form Submission)
 
 ```js
-// Listen for form submission
+// This code runs when the user submits the form to add a new resource.
 document.getElementById("resourceForm").addEventListener("submit", async (e) => {
-  e.preventDefault(); // Prevents default form reload
-  const data = Object.fromEntries(new FormData(e.target)); // Collects form data into an object
+  e.preventDefault(); // Stops the page from reloading when the form is submitted.
+  // Collects all the data the user entered into the form fields.
+  const data = Object.fromEntries(new FormData(e.target));
+  // Sends the data to the backend using a POST request.
   const res = await fetch("https://your-api-id.amazonaws.com/dev/add-resource", {
-    method: "POST", // HTTP POST request
-    headers: {'Content-Type': 'application/json'}, // Tells server to expect JSON
-    body: JSON.stringify(data) // Converts form data to JSON string
+    method: "POST", // Tells the server we want to add (POST) something.
+    headers: {'Content-Type': 'application/json'}, // Says we're sending data in JSON format.
+    body: JSON.stringify(data) // Converts the form data into a JSON string.
   });
-  const result = await res.json(); // Parses JSON response
-  alert(result.message); // Shows success message to user
+  // Waits for the server to reply and turns the reply into a JavaScript object.
+  const result = await res.json();
+  // Shows a message to the user (like "Resource added!")
+  alert(result.message);
 });
 ```
-**Explanation:**
-- Adds an event listener to the form.
-- Prevents page reload on submit.
-- Collects all form fields into a JS object.
-- Sends a POST request to the API Gateway endpoint with the form data as JSON.
-- Waits for the response, parses it, and shows a message to the user.
+**Step-by-step for beginners:**
+- The code waits for the user to submit the form.
+- It stops the page from reloading (so you stay on the same page).
+- It grabs all the info you typed in (like type, location, contact, description).
+- It sends that info to the backend server using a special web request (POST).
+- The backend replies with a message, which pops up on your screen.
 
 ---
 
 ### 2. JavaScript: get-resources.js (Fetches and Displays Data)
 
 ```js
-// Fetch resources from API and display in table
+// This code runs when the homepage loads and shows all resources in a table.
 async function loadResources() {
-  const res = await fetch("https://your-api-id.amazonaws.com/dev/get-resources"); // GET request to API
-  const items = await res.json(); // Parse JSON response
-  const tbody = document.querySelector("#resourcesTable tbody"); // Find table body
-  tbody.innerHTML = ""; // Clear previous rows
+  // Asks the backend for all resources using a GET request.
+  const res = await fetch("https://your-api-id.amazonaws.com/dev/get-resources");
+  // Turns the reply from the backend into a JavaScript array.
+  const items = await res.json();
+  // Finds the part of the page where the table rows go.
+  const tbody = document.querySelector("#resourcesTable tbody");
+  tbody.innerHTML = ""; // Clears out any old rows.
+  // For each resource, creates a new row in the table.
   items.forEach(item => {
-    const row = document.createElement("tr"); // Create new table row
+    const row = document.createElement("tr");
     row.innerHTML = `
       <td>${item.type}</td>
       <td>${item.location}</td>
@@ -398,17 +406,16 @@ async function loadResources() {
       <td>${item.description}</td>
       <td>${item.timestamp}</td>
     `;
-    tbody.appendChild(row); // Add row to table
+    tbody.appendChild(row); // Adds the row to the table.
   });
 }
 
-window.onload = loadResources; // Load resources when page opens
+window.onload = loadResources; // Runs the function when the page opens.
 ```
-**Explanation:**
-- Defines a function to fetch resources from the API.
-- Parses the JSON response.
-- Clears the table and adds a row for each resource.
-- Runs automatically when the page loads.
+**Step-by-step for beginners:**
+- When you open the homepage, the code asks the backend for all resources.
+- The backend sends back a list of resources.
+- The code puts each resource into a new row in the table so you can see them all.
 
 ---
 
@@ -421,29 +428,28 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Resources')
 
 def lambda_handler(event, context):
-    body = json.loads(event['body']) # Parse incoming JSON
+    body = json.loads(event['body']) # Gets the data sent from the frontend.
     item = {
-        'id': str(uuid.uuid4()), # Unique ID for each resource
-        'type': body['type'],
-        'location': body['location'],
-        'contact': body['contact'],
-        'description': body['description'],
-        'timestamp': datetime.datetime.utcnow().isoformat() # Current UTC time
+        'id': str(uuid.uuid4()), # Makes a unique ID for the new resource.
+        'type': body['type'], # Gets the type (food, shelter, etc.)
+        'location': body['location'], # Gets the location.
+        'contact': body['contact'], # Gets the contact info.
+        'description': body['description'], # Gets the description.
+        'timestamp': datetime.datetime.utcnow().isoformat() # Adds the current time.
     }
-    table.put_item(Item=item) # Save item to DynamoDB
+    table.put_item(Item=item) # Saves the new resource in the database.
     return {
         'statusCode': 200,
-        'headers': {'Access-Control-Allow-Origin': '*'}, # Allow browser requests
-        'body': json.dumps({'message': 'Resource added!'}) # Success message
+        'headers': {'Access-Control-Allow-Origin': '*'}, # Lets browsers access the response.
+        'body': json.dumps({'message': 'Resource added!'}) # Sends a success message back.
     }
 ```
-**Explanation:**
-- Imports required libraries.
-- Connects to DynamoDB and selects the table.
-- Parses the incoming request body.
-- Creates a new resource item with a unique ID and timestamp.
-- Saves the item to DynamoDB.
-- Returns a success message and CORS headers.
+**Step-by-step for beginners:**
+- The function runs when someone submits a new resource.
+- It gets all the info sent from the website.
+- It creates a new resource with a unique ID and the current time.
+- It saves the resource in the DynamoDB database.
+- It sends a message back saying the resource was added.
 
 ---
 
@@ -456,18 +462,17 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Resources')
 
 def lambda_handler(event, context):
-    response = table.scan() # Reads all items from table
-    items = response['Items'] # Gets the list of resources
+    response = table.scan() # Gets all resources from the database.
+    items = response['Items'] # Makes a list of all resources.
     return {
         'statusCode': 200,
-        'headers': {'Access-Control-Allow-Origin': '*'}, # Allow browser requests
-        'body': json.dumps(items) # Returns all resources as JSON
+        'headers': {'Access-Control-Allow-Origin': '*'}, # Lets browsers access the response.
+        'body': json.dumps(items) # Sends all resources back as a list.
     }
 ```
-**Explanation:**
-- Imports required libraries.
-- Connects to DynamoDB and selects the table.
-- Scans the table to get all resources.
-- Returns the list of resources and CORS headers.
+**Step-by-step for beginners:**
+- The function runs when the homepage asks for all resources.
+- It gets all resources from the DynamoDB database.
+- It sends the list of resources back to the website so they can be shown in the table.
 
 ---
