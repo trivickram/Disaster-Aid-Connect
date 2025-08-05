@@ -1,4 +1,7 @@
 # 🆘 Disaster Aid Connect (AWS Free Tier Project)
+[**Live Demo Links:**]
+- [Add Resource Page](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/add.html)
+- [Homepage (View Resources)](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/index.html)
 
 Disaster Aid Connect is a beginner-friendly, full-stack serverless web application that allows users to add and view emergency resources such as food, shelter, and medical help during disasters.
 
