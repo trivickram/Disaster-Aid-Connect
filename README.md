@@ -1,7 +1,96 @@
 # 🆘 Disaster Aid Connect (AWS Free Tier Project)
 [**Live Demo Links:**]
-- [Add Resource Page](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/add.html)
-- [Homepage (View Resources)](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/index.html)
+
+Disaster Aid Connect is a beginner-friendly, full-stack serverless web application that allows users to add and view emergency resources such as food, shelter, and medical help during disasters.
+
+---
+
+## 🖼️ Screenshots
+
+> ![Homepage Table](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/screenshots/homepage-table.png)
+> ![Add Resource Form](https://disastor-aid.s3.ap-south-1.amazonaws.com/Disastor-aid/screenshots/add-resource-form.png)
+> *(Add your own screenshots in the `screenshots/` folder for more views)*
+
+---
+
+## ⚡ Quick Start (Local Demo)
+
+1. Clone this repo: `git clone https://github.com/trivickram/Disaster-Aid-Connect.git`
+2. Open `index.html` and `add.html` directly in your browser to test the frontend UI.
+3. To test backend, deploy Lambda and API Gateway as per guide below.
+4. For local API testing, use [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) or [LocalStack](https://docs.localstack.cloud/).
+
+---
+
+## 📚 API Reference
+
+### Add Resource (POST)
+`POST /add-resource`
+**Request Body:**
+```json
+{
+  "type": "food",
+  "location": "Hyderabad",
+  "contact": "1234567890",
+  "description": "Free food point"
+}
+```
+**Response:**
+```json
+{
+  "message": "Resource added!"
+}
+```
+
+### Get Resources (GET)
+`GET /get-resources`
+**Response:**
+```json
+[
+  {
+    "id": "...",
+    "type": "food",
+    "location": "Hyderabad",
+    "contact": "1234567890",
+    "description": "Free food point",
+    "timestamp": "2025-08-05T09:30..."
+  },
+  // ...more resources
+]
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+- Fork the repo and create a new branch
+- Submit issues or feature requests via GitHub Issues
+- Open a pull request with your changes
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See `LICENSE` for details.
+
+---
+
+## 📬 Contact & Support
+
+- For questions or support, open an issue on GitHub
+- Or email: trivickram@gmail.com
+
+---
+
+## 🐞 Known Issues & Troubleshooting
+
+- **CORS errors**: Ensure API Gateway has CORS enabled for all endpoints
+- **S3 permissions**: Double-check bucket policy for public read access
+- **Lambda errors**: Check IAM role permissions for DynamoDB access
+- **Frontend not updating**: Clear browser cache after uploading new files to S3
+
+---
 
 Disaster Aid Connect is a beginner-friendly, full-stack serverless web application that allows users to add and view emergency resources such as food, shelter, and medical help during disasters.
 
