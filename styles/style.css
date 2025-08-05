@@ -1,0 +1,88 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+h1 {
+  color: #2e6da4;
+}
+
+form {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form input, form textarea {
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #ffffff;
+}
+
+form input:focus, form textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+button {
+  background-color: #2e6da4;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1e4a72;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  color: #ffffff;
+}
+
+table th {
+  background-color: #2e6da4;
+}
+
+table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+table tr:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  form input, form textarea {
+    width: 100%;
+    padding: 6px;
+  }
+}
