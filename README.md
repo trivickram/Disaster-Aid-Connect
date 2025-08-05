@@ -350,3 +350,124 @@ Entries appear like this in the homepage table:
 ## 👏 Credits
 
 Built as part of a beginner-to-intermediate project challenge using **only AWS Free Tier**, with a goal of learning full-stack serverless deployment in a real-world context.
+
+---
+
+## 📜 Code Walkthroughs: JavaScript & Lambda Scripts
+
+### 1. JavaScript: add-resource.js (Handles Form Submission)
+
+```js
+// Listen for form submission
+document.getElementById("resourceForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); // Prevents default form reload
+  const data = Object.fromEntries(new FormData(e.target)); // Collects form data into an object
+  const res = await fetch("https://your-api-id.amazonaws.com/dev/add-resource", {
+    method: "POST", // HTTP POST request
+    headers: {'Content-Type': 'application/json'}, // Tells server to expect JSON
+    body: JSON.stringify(data) // Converts form data to JSON string
+  });
+  const result = await res.json(); // Parses JSON response
+  alert(result.message); // Shows success message to user
+});
+```
+**Explanation:**
+- Adds an event listener to the form.
+- Prevents page reload on submit.
+- Collects all form fields into a JS object.
+- Sends a POST request to the API Gateway endpoint with the form data as JSON.
+- Waits for the response, parses it, and shows a message to the user.
+
+---
+
+### 2. JavaScript: get-resources.js (Fetches and Displays Data)
+
+```js
+// Fetch resources from API and display in table
+async function loadResources() {
+  const res = await fetch("https://your-api-id.amazonaws.com/dev/get-resources"); // GET request to API
+  const items = await res.json(); // Parse JSON response
+  const tbody = document.querySelector("#resourcesTable tbody"); // Find table body
+  tbody.innerHTML = ""; // Clear previous rows
+  items.forEach(item => {
+    const row = document.createElement("tr"); // Create new table row
+    row.innerHTML = `
+      <td>${item.type}</td>
+      <td>${item.location}</td>
+      <td>${item.contact}</td>
+      <td>${item.description}</td>
+      <td>${item.timestamp}</td>
+    `;
+    tbody.appendChild(row); // Add row to table
+  });
+}
+
+window.onload = loadResources; // Load resources when page opens
+```
+**Explanation:**
+- Defines a function to fetch resources from the API.
+- Parses the JSON response.
+- Clears the table and adds a row for each resource.
+- Runs automatically when the page loads.
+
+---
+
+### 3. Lambda: addResource (Python)
+
+```python
+import json, boto3, uuid, datetime
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('Resources')
+
+def lambda_handler(event, context):
+    body = json.loads(event['body']) # Parse incoming JSON
+    item = {
+        'id': str(uuid.uuid4()), # Unique ID for each resource
+        'type': body['type'],
+        'location': body['location'],
+        'contact': body['contact'],
+        'description': body['description'],
+        'timestamp': datetime.datetime.utcnow().isoformat() # Current UTC time
+    }
+    table.put_item(Item=item) # Save item to DynamoDB
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'}, # Allow browser requests
+        'body': json.dumps({'message': 'Resource added!'}) # Success message
+    }
+```
+**Explanation:**
+- Imports required libraries.
+- Connects to DynamoDB and selects the table.
+- Parses the incoming request body.
+- Creates a new resource item with a unique ID and timestamp.
+- Saves the item to DynamoDB.
+- Returns a success message and CORS headers.
+
+---
+
+### 4. Lambda: getResources (Python)
+
+```python
+import json, boto3
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('Resources')
+
+def lambda_handler(event, context):
+    response = table.scan() # Reads all items from table
+    items = response['Items'] # Gets the list of resources
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'}, # Allow browser requests
+        'body': json.dumps(items) # Returns all resources as JSON
+    }
+```
+**Explanation:**
+- Imports required libraries.
+- Connects to DynamoDB and selects the table.
+- Scans the table to get all resources.
+- Returns the list of resources and CORS headers.
+
+---
